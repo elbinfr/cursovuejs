@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Curso de VueJS</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<script src="vue.js"></script>
+</head>
+<body id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="jumbotron" v-if="name">
+                    <h1>
+                        {{ genero == 'm' ? 'Bienvenido' : 'Bienvenida'}}, {{ name }}
+                    </h1>
+                    <h3>Sonrie porque Cristo te ama!!!</h3>
+                </div>
+                <div class="jumbotron" v-else>
+                    <h1>Qui&eacute;n eres??</h1>
+                </div>
+                <div class="radio">
+                    <label class="radio-inline">G&eacute;nero: </label>
+                    <label class="radio-inline">
+                        <input type="radio" value="m" v-model="genero">
+                        Masculino
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" value="f" v-model="genero">
+                        Femenino
+                    </label>
+                </div>
+                <input type="text" class="form-control" placeholder="Ingresa tu nombre" v-model="name">
+
+                <p class="alert alert-danger" v-if="name.length < 3">
+                    El nombre no es valido
+                </p>
+                <hr>
+                <pre>
+                    {{ $data | json }}
+                </pre>
+            </div>
+        </div>
+    </div>
+	
+	<script type="text/javascript">
+        new Vue({
+            el: '#app',
+
+            data: {
+                name: "",
+                genero: "m"
+            }
+        })
+	</script>
+</body>
+</html>
