@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Curso de VueJS</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<script src="vue.js"></script>
+</head>
+<body id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="jumbotron" v-if="name">
+                    <h1>
+                        {{ genero == 'm' ? 'Bienvenido' : 'Bienvenida'}}, {{ name }}
+                    </h1>
+                    <h3>Sonrie porque Cristo te ama!!!</h3>
+                </div>
+                <div class="jumbotron" v-else>
+                    <h1>Qui&eacute;n eres??</h1>
+                </div>
+                <form @submit.prevent="singUp(false, $event)">
+                    <div class="radio">
+                        <label class="radio-inline">G&eacute;nero: </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="m" v-model="genero">
+                            Hombre
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="f" v-model="genero">
+                            Mujer
+                        </label>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Ingresa tu nombre" v-model="name">
+
+                    <p class="alert alert-danger" v-if="name.length < 3">
+                        El nombre no es valido
+                    </p>
+
+                    <input type="date" class="form-control" placeholder="Fecha de Nacimiento" v-model="birthday">
+                    <br>
+
+                    <p>A&ntilde;os de Experiencia en PHP</p>
+                    <p>
+                        Respuesta: {{ years_php }}
+                        <button type="button" class="btn btn-primary btn-xs" @click="add">+</button>
+                        <button type="button" class="btn btn-danger btn-xs" @click="sub">-</button>
+                    </p>
+                    
+                    <hr>
+
+                    <p v-show="name">
+                        <button class="btn btn-primary">
+                            Registrate
+                        </button>
+
+                        <button class="btn btn-primary" @click="singUp(true, $event)">
+                            Registrate y Sal del sistema
+                        </button>
+                    </p>
+                </form>
+                
+                <pre>
+                    {{ $data | json }}
+                </pre>
+            </div>
+        </div>
+    </div>
+	
+	<script type="text/javascript">
+        new Vue({
+            el: '#app',
+
+            data: {
+                name: "",
+                birthday: "",
+                today: new Date(),
+                genero: "m",
+                years_php: 0
+            },
+
+            methods: {
+                singUp: function(value, event){
+                    event.preventDefault();
+                    alert(this.name + ", por favor espera mientras te registramos");
+
+                    if(value){
+                        alert("Saliendo del sistema ...");
+                    }
+                },
+                add: function(){
+                    var anio_actual = this.today.getFullYear();
+                    var birthday = new Date(this.birthday);
+                    var anio_nacimiento = birthday.getFullYear();
+                    if(this.years_php < (anio_actual - anio_nacimiento)){
+                        this.years_php ++;
+                    }                    
+                },
+                sub: function(){
+                    if(this.years_php > 0){
+                        this.years_php --;    
+                    }                    
+                }
+            }
+        })
+	</script>
+</body>
+</html>
