@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Curso de VueJS</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<script src="vue.js"></script>
+</head>
+<body id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="jumbotron" v-if="name">
+                    <mensaje-saludo v-bind:genero="genero" v-bind:name="name"></mensaje-saludo>
+                </div>
+                <div class="jumbotron" v-else>
+                    <h1>Qui&eacute;n eres??</h1>
+                </div>
+                <form @submit.prevent="singUp(false, $event)">
+                    <div class="radio">
+                        <label class="radio-inline">G&eacute;nero: </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="m" v-model="genero">
+                            Hombre
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="f" v-model="genero">
+                            Mujer
+                        </label>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Ingresa tu nombre" v-model="name">
+
+                    <p class="alert alert-danger" v-if="name.length < 3">
+                        El nombre no es valido
+                    </p>
+
+                    <br>
+
+                    <experiencia-tech v-bind:years.sync="years_php" tech="PHP"></experiencia-tech>
+                    <experiencia-tech v-bind:years.sync="years_js" tech="JS"></experiencia-tech>
+                    
+                    <hr>
+
+                    <p v-show="name">
+                        <button class="btn btn-primary">
+                            Registrate
+                        </button>
+
+                        <button class="btn btn-primary" @click="singUp(true, $event)">
+                            Registrate y Sal del sistema
+                        </button>
+                    </p>
+
+                    <saludar v-bind:name="name"></saludar>
+                </form>
+                
+                <pre>
+                    {{ $data | json }}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/template" id="saludo_template">
+        <h1>
+            {{ genero == 'm' ? 'Bienvenido' : 'Bienvenida'}}, {{ name }}
+        </h1>
+        <h3>Sonrie porque Cristo te ama!!!</h3>
+    </script>
+
+    <script type="text/template" id="experiencia_template">
+        <p>A&ntilde;os de Experiencia en {{ tech }}</p>
+            <p>
+                Respuesta: {{ years }}
+                <button type="button" 
+                    v-bind:class="{'btn': true, 'btn-xs': true, 'btn-danger': years > 10}"
+                    v-bind:style="getTamanioFuente()"
+                    @click="add()">
+                    +
+                </button>
+                <button type="button" 
+                    class="btn btn-xs" 
+                    v-bind:disabled="years == 0" 
+                    @click="sub()">
+                    -
+                </button>
+            </p>
+    </script>
+	
+	<script type="text/javascript">
+        Vue.component('saludar', {
+            template: '<h3>Buen dia {{ name }}</h3>',
+            props: ['name']
+        });
+
+        Vue.component('mensaje-saludo', {
+            template: '#saludo_template',
+            props: ['genero', 'name']
+        });
+
+        Vue.component('experiencia-tech', {
+            template: '#experiencia_template',
+            props: ['years', 'tech'],
+            methods: {
+                add: function(){
+                    this.years ++;
+                },
+                sub: function(){
+                    this.years --;
+                },
+                getTamanioFuente: function(){
+                    return {
+                        'font-size': 10 + this.years + 'px'
+                    };
+                }
+            }
+        });
+
+        new Vue({
+            el: '#app',
+
+            data: {
+                name: "",
+                birthday: "",
+                today: new Date(),
+                genero: "m",
+                years_php: 0,
+                years_js: 0,
+                origin_php: 1995,
+                origin_js: 1997
+            },
+
+            methods: {
+                singUp: function(value, event){
+                    event.preventDefault();
+                    alert(this.name + ", por favor espera mientras te registramos");
+
+                    if(value){
+                        alert("Saliendo del sistema ...");
+                    }
+                },
+                add: function(tech){
+                    if(tech == 'PHP'){
+                        this.years_php++;
+                    } else if(tech == 'JS'){
+                        this.years_js++;
+                    }                    
+                },
+                sub: function(tech){
+                    if(tech == 'PHP'){
+                        this.years_php --;
+                    } else if(tech == 'JS'){
+                        this.years_js --;
+                    }                    
+                },
+                compararAnios: function(tech){
+                    var anio_actual = this.today.getFullYear();
+                    if(tech == 'PHP'){
+                        var dif_anios = anio_actual - this.origin_php;
+                        return this.years_php >= dif_anios;
+                    } else if(tech == 'JS'){
+                        var dif_anios = anio_actual - this.origin_js;
+                        return this.years_js >= dif_anios;
+                    }
+                },
+                getTamanioFuente: function(tech){
+                    if(tech == 'PHP'){
+                        return {
+                            'font-size': 10 + this.years_php + 'px'
+                        };   
+                    }else if(tech == 'JS'){
+                        return {
+                            'font-size': 10 + this.years_js + 'px'
+                        };
+                    }
+                    
+                }
+            }
+        })
+	</script>
+</body>
+</html>
