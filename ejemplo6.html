@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Curso de VueJS</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<style>
+		i {
+			font-weight: bold;
+			font-size: 0.8em;
+		}
+
+		.favorito {
+			color: blue;
+		}
+
+		.favorito button{
+			color: blue;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>Mis notas</h3>
+				<form class="form" v-on:submit.prevent="addNote">
+					<div class="form-group">
+						<textarea class="form-control" placeholder="Ingresa una Nota" v-model="new_note.text"></textarea>
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Autor" v-model="new_note.author">
+					</div>
+					<button class="btn btn-primary" v-if="showButton()">Agregar Nota</button>
+				</form>
+				
+				<hr>
+				
+				<ul class="list-group">
+					<li v-for="note in notes" v-bind:class="{'list-group-item': true, 'favorito': esFavorito($index)}">
+						{{ note.text }}, <i>por {{ note.author }}</i>
+						<button type="button" class="btn btn-xs pull-right" v-on:click="setFavorito($index)">
+							Favorito
+						</button>
+					</li>
+				</ul>
+
+				<hr>
+
+				<pre>
+					{{ $data | json }}
+				</pre>
+			</div>
+		</div>
+	</div>
+	
+
+	<script type="text/javascript" src="vue.js"></script>
+	<script type="text/javascript">
+		new Vue({
+			el: 'body',
+
+			data: {
+				new_note: {text: '', author: '', favorito: false},
+				notes: []
+			},
+
+			methods: {
+				showButton: function(){
+					return (this.new_note.text != '' && this.new_note.author != '');
+				},
+				addNote: function(){
+					this.notes.push(this.new_note);
+					this.new_note = {text: '', author: '', favorito: false};
+				},
+				setFavorito: function(index){
+					this.notes[index].favorito = true;
+				},
+				esFavorito: function(index){
+					return this.notes[index].favorito;
+				}
+			}
+		})
+		
+	</script>
+</body>
+</html>
