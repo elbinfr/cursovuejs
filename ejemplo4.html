@@ -88,6 +88,8 @@
                             Registrate y Sal del sistema
                         </button>
                     </p>
+
+                    <saludar v-bind:name="name"></saludar>
                 </form>
                 
                 <pre>
@@ -98,6 +100,11 @@
     </div>
 	
 	<script type="text/javascript">
+        Vue.component('saludar', {
+            template: '<h3>Buen dia {{ name }}</h3>',
+            props: ['name']
+        });
+
         new Vue({
             el: '#app',
 

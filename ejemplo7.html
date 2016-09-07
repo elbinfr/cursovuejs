@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Curso de VueJS</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<script src="vue.js"></script>
+</head>
+<body id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="jumbotron" v-if="name">
+                    <mensaje-saludo v-bind:genero="genero" v-bind:name="name"></mensaje-saludo>
+                </div>
+                <div class="jumbotron" v-else>
+                    <h1>Qui&eacute;n eres??</h1>
+                </div>
+                <form @submit.prevent="singUp(false, $event)">
+                    <div class="radio">
+                        <label class="radio-inline">G&eacute;nero: </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="m" v-model="genero">
+                            Hombre
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="f" v-model="genero">
+                            Mujer
+                        </label>
+                    </div>
+                    <label>Nombre:</label>
+                    <input type="text" class="form-control" v-model="first_name">
+
+                    <label>Apellidos</label>
+                    <input type="text" class="form-control" v-model="last_name">
+
+                    <p class="alert alert-danger" v-if="name.length < 3">
+                        El nombre no es valido
+                    </p>
+
+                    <hr>
+
+                    <h4>A&ntilde;os de Experiencia</h4>
+                    <form class="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Tecnologia" v-model="new_tech.name">    
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Experiencia" v-model="new_tech.years">    
+                        </div>
+                        <button class="btn btn-primary" v-on:click="addExperiencia" v-if="showButtonAdd()">Agregar</button>
+                    </form>
+
+                    <hr>
+
+                    <ul>
+                        <li v-for="tech in techs">
+                            <experiencia-tech v-bind:years.sync="tech.years" v-bind:tech="tech.name"></experiencia-tech>
+                        </li>
+                    </ul>
+                    
+                    <hr>
+
+                    <p v-show="name">
+                        <button class="btn btn-primary">
+                            Registrate
+                        </button>
+
+                        <button class="btn btn-primary" @click="singUp(true, $event)">
+                            Registrate y Sal del sistema
+                        </button>
+                    </p>
+
+                </form>
+                
+                <pre>
+                    {{ $data | json }}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/template" id="saludo_template">
+        <h1>
+            {{ genero == 'm' ? 'Bienvenido' : 'Bienvenida'}}, {{ name }}
+        </h1>
+        <h3>Sonrie porque Cristo te ama!!!</h3>
+    </script>
+
+    <script type="text/template" id="experiencia_template">
+        <p>A&ntilde;os de Experiencia en {{ tech }}</p>
+        <p>
+            Respuesta: {{ years }}
+            <button type="button" 
+                v-bind:class="{'btn': true, 'btn-xs': true, 'btn-danger': years > 10}"
+                v-bind:style="getTamanioFuente()"
+                @click="add()">
+                +
+            </button>
+            <button type="button" 
+                class="btn btn-xs" 
+                v-bind:disabled="years == 0" 
+                @click="sub()">
+                -
+            </button>
+            <label><b>{{ level }}</b></label>
+        </p>
+    </script>
+	
+	<script type="text/javascript">
+        Vue.component('saludar', {
+            template: '<h3>Buen dia {{ name }}</h3>',
+            props: ['name']
+        });
+
+        Vue.component('mensaje-saludo', {
+            template: '#saludo_template',
+            props: ['genero', 'name']
+        });
+
+        Vue.component('experiencia-tech', {
+            template: '#experiencia_template',
+            props: ['years', 'tech'],
+            methods: {
+                add: function(){
+                    this.years ++;
+                },
+                sub: function(){
+                    this.years --;
+                },
+                getTamanioFuente: function(){
+                    return {
+                        'font-size': 10 + this.years + 'px'
+                    };
+                }
+            },
+            computed: {
+                level: function(){
+                    if(this.years <= 2){
+                        return 'Principiante';
+                    }else if(this.years <= 5){
+                        return 'Intermedio';
+                    }else {
+                        return 'Experto';
+                    }
+                }
+            }
+        });
+
+        new Vue({
+            el: '#app',
+
+            data: {                
+                first_name: '',
+                last_name: '',
+                birthday: "",
+                today: new Date(),
+                genero: "m",
+                years_php: 0,
+                years_js: 0,
+                origin_php: 1995,
+                origin_js: 1997,
+                techs: [],
+                new_tech: {name: '', years: ''}
+            },
+            computed: {
+                name: function(){
+                    if(this.first_name || this.last_name){
+                        return this.first_name + ' ' + this.last_name;
+                    }
+                     return '';
+                }
+            },
+            methods: {
+                singUp: function(value, event){
+                    event.preventDefault();
+                    alert(this.name + ", por favor espera mientras te registramos");
+
+                    if(value){
+                        alert("Saliendo del sistema ...");
+                    }
+                },
+                add: function(tech){
+                    if(tech == 'PHP'){
+                        this.years_php++;
+                    } else if(tech == 'JS'){
+                        this.years_js++;
+                    }                    
+                },
+                showButtonAdd: function(){
+                    if(this.new_tech.name !='' && this.new_tech.years > 0){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                },
+                addExperiencia: function(){
+                    this.new_tech.years = parseInt(this.new_tech.years);
+                    this.techs.push(this.new_tech);
+                    this.new_tech = {name: '', years: ''};
+                }
+            }
+        })
+	</script>
+</body>
+</html>
